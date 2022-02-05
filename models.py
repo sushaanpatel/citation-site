@@ -9,6 +9,7 @@ dotenv.load_dotenv()
 password = os.environ.get('PASS') 
 app = Flask(__name__)
 app.config["MONGO_URI"] = f'mongodb+srv://root:{password}@memes.2xsyj.mongodb.net/citation?retryWrites=true&w=majority'
+app.config["SECRET_KEY"] = f'secretkeysecretkey'
 mongo = PyMongo(app)
 
 

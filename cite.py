@@ -127,5 +127,5 @@ def delete(cid):
     return redirect('/')
 
 if __name__ == '__main__':
-    app.secret_key = 'supersecretkey'
+    app.secret_key = 'secretkeysecretkey'
     app.run(debug=True)
