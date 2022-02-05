@@ -1,0 +1,255 @@
+<html>
+    <head>
+        <title>Fountainhead Cites</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+            body{
+                font-family: 'Poppins', sans-serif;
+                background-color: #222222;
+                color: white;
+            }
+            #card:hover{
+                background-image: linear-gradient(to top, #4261a6, #192848);
+                cursor: pointer; 
+            }
+            .noscroll::-webkit-scrollbar {
+                display: none;
+            } 
+            .noscroll {
+            -ms-overflow-style: none;
+            scrollbar-width: none; 
+            }
+            #topbutton{
+                position: fixed;
+                right: 30px;
+                z-index: 99;
+                font-size: 18px;
+                border: none;
+                outline: none;
+                border-radius: 20px;
+                padding-top: 10px;
+                padding-left: 10px;
+                padding-right: 10px;
+                padding-bottom: 10px;
+            }
+            #citeall{
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                z-index: 99;
+                border-radius: 20px;
+            }
+        </style>
+    </head>
+    <body class="noscroll">
+        <!-- offcanvas nav -->
+        <button class="btn btn-dark" style="background-color: #4b6cb7;float:left;margin:10px;font-size:30px;z-index:99;position:fixed;border-radius:20px;" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasmenu" aria-controls="offcanvasmenu"><i class="bi bi-list"></i></button>
+        <!-- offcanvas menu -->
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasmenu" aria-labelledby="offcanvasTopLabel" style="background-color: #222222;">
+            <div class="offcanvas-header">
+                <h5 id="offcanvasTopLabel">Menu</h5>
+                <button type="button" class="btn" style="color:white;" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="offcanvas-body">
+                {% if 'username' in session %}
+                <p style="color: #4b6cb7;font-size:20px;width:150px;">{{session['username']}}</p>
+                <a href="/logout" class="btn btn-dark" style="background-color: #4b6cb7;font-size:22px;width:150px;"><i class="bi bi-box-arrow-in-left"></i> Log-Out</a>
+                <br><br>
+                <a href="/deleteacc/<uid>" class="btn btn-danger" style="font-size:22px;width:150px;">Delete</a>
+                {% else %}
+                <button class="btn btn-dark" style="background-color: #4b6cb7;font-size:20px;width:150px;" data-bs-toggle="offcanvas" data-bs-target="#offcanvaslogin" aria-controls="offcanvaslogin"><i class="bi bi-box-arrow-in-right"></i> Log-in</button>
+                <br><br>
+                <button class="btn btn-dark" style="background-color: #4b6cb7;font-size:20px;width:150px;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasres" aria-controls="offcanvasres">Register</button>
+                {% endif %}
+            </div>
+            </div>
+        </div>
+        <!-- Login offcanvas -->
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvaslogin" aria-labelledby="offcanvaslogin" style="background-color: #222222;">
+        <div class="offcanvas-header">
+            <h5 id="offcanvasTopLabel">Log-in</h5>
+            <button type="button" class="btn" style="color:white;" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="offcanvas-body">
+            <form action="/login" method="POST">
+                {% if err == "1" %}<p style="color:red;">Your credentials are incorrect</p><script>window.onload = () => loginmsg()</script>{% endif %}
+                <input type="username" name="username" id="username" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Username">
+                <input type="password" name="password" id="password" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Password">
+                <br>
+                <input type="submit" value="Log-in" class="btn btn-primary">
+            </form>
+            <button class="btn btn-link" style="padding: 0;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasres" aria-controls="offcanvasres">Dont have a account?</button>
+        </div>
+        </div>
+        <!-- Register offcanvas -->
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasres" aria-labelledby="offcanvasres" style="background-color: #222222;">
+        <div class="offcanvas-header">
+            <h5 id="offcanvasTopLabel">Register</h5>
+            <button type="button" class="btn" style="color:white;" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="offcanvas-body">
+            <form action="/register" method="POST">
+                {% if err == "2" %}<p style="color:red;">Your credentials are incorrect</p><script>window.onload = () => loginmsg()</script>{% endif %}
+                <input type="email" name="email" id="email" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Email">
+                <input type="username" name="username" id="username" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Username">
+                <input type="password" name="password" id="password" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Password">
+                <br>
+                <input type="submit" value="Register" class="btn btn-primary">
+            </form>
+            <button class="btn btn-link" style="padding: 0;" data-bs-toggle="offcanvas" data-bs-target="#offcanvaslogin" aria-controls="offcanvaslogin">Have an account?</button>
+        </div>
+        </div>
+        <!-- All Cites Modal -->
+        {% if all != "" %}
+        <a href="" id="citeall" class="btn btn-info" style="color: white;float:right;background-color:#182848;border:0px;font-size:18px;" data-bs-toggle="modal" data-bs-target="#citeModal"><b>Get All Alphabetically</b></a>
+        {% endif %}
+        <div class="modal fade" id="citeModal" tabindex="-1" aria-labelledby="citeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-lg">
+              <div class="modal-content" style="background-color: #222222;">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">All Citations</h5>
+                  <button type="button" style="background-color: white;" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" onclick="navigator.clipboard.writeText(`{{all}}`);alert('Copied!');" style="cursor: pointer;">
+                    {% for i in cites %}
+                    <p>{{i['full_citation']}}</p><br>
+                    {% endfor %}      
+                </div>
+                <div class="modal-footer">
+                    <b style="cursor: pointer;" onclick="navigator.clipboard.writeText(`{{all}}`);alert('Copied!');"><i class="bi bi-clipboard" style="font-size: 24;" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to Copy Citation"></i></b>
+                </div>
+              </div>
+            </div>
+        </div>
+        <!-- Add Citation -->
+        <button id="topbutton" class="btn btn-primary" style="background-color: #4b6cb7;display:none;bottom: 80px;" onclick="topFunction()"><i style="font-size:30px;" class="bi bi-arrow-bar-up"></i></button>
+        <center>
+        <br>
+        <button id="topbutton" class="btn btn-light" type="button" data-bs-toggle="modal" data-bs-target="#addcite" aria-expanded="false" aria-controls="addcite" style="bottom: 20px;font-size:30px;"><b><i class="bi bi-plus-lg"></i></b></button>
+        <div class="modal fade" id="addcite" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable">
+              <div class="modal-content" style="background-color: #222222;">
+                <div class="modal-body">
+                    <form action="/cite" method="POST">
+                        <br>
+                        <input type="url" name="url" id="url" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Url">
+                        <input type="text" name="author" id="author" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Author">
+                        <input type="text" name="publisher" id="publisher" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Publisher">
+                        <label for="ac_date"><b>Access Date</b></label>
+                        <input type="date" name="ac_date" id="ac_date" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Access Date">
+                        <label for="pub_date"><b>Publification Date</b></label>
+                        <input type="date" name="pub_date" id="pub_date" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Publification Date">
+                        <br>
+                        <input type="submit" id="btn" value="Cite" disabled="true" class="btn btn-primary">
+                    </form> 
+                </div>
+              </div>
+            </div>
+        </div>
+        <br>
+    <div class="container-fluid" style="width: 85%;">
+        {% if login_r == true %}<p class="alert alert-danger" style="cursor:pointer;font-size:16px;width:40%;" onclick="loginmsg()">Login to your account to save and edit your citations!</p>{% endif %}
+        {% if temp == []%}
+        <center>
+            <h2>:( No Citations Found</h2>
+            <br>
+            <button class="btn btn-dark" type="button" data-bs-toggle="modal" data-bs-target="#addcite" aria-expanded="false" aria-controls="addcite" style="background-color: #4b6cb7;font-size:20px;border-radius:10px;"><b>Add your first Citation</b></button>
+        </center>
+        {% else %}
+       {% for i in temp %}
+       <div class="row">
+        {% for j in i %}
+        <div class="modal fade" id="{{j['_id']}}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable">
+              <div class="modal-content" style="background-color: #222222;">
+                <div class="modal-body"> 
+                    <form action="/edit/{{j['_id']}}" method="POST">
+                        <br>
+                        <input type="url" name="url" id="eurl" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #222222;color:white;" placeholder="Url" value="{{j['url']}}">
+                        <input type="text" name="author" id="eauthor" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Author" value="{{j['author']}}">
+                        <input type="text" name="publisher" id="epublisher" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Publisher" value="{{j['publisher']}}">
+                        <label for="ac_date"><b>Access Date</b></label>
+                        <input type="date" name="ac_date" id="eac_date" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Access Date" value="{{j['ac_date']}}">
+                        <label for="pub_date"><b>Publification Date</b></label>
+                        <input type="date" name="pub_date" id="epub_date" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Publification Date" value="{{j['pub_year']}}">
+                        <br>
+                        <input type="submit" value="Edit" class="btn btn-primary">
+                    </form>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="col col-lg">
+       <div class="card" style="width:100%;min-width:350px;max-width:800px;border-radius:10px;min-height:300px;height:95%;margin-bottom:6%;background-image:linear-gradient(to top, #4b6cb7, #1f325b);border:0px;">
+            <a href="{{j['url']}}" target="_blank" style="text-decoration: none;color:white;"><div class="card-header">
+                <b><img src="{{j['icon']}}" alt="icon" width="5%" style="border-radius: 5px;"> "{{j['web_title']}}"</b>
+            </div></a>
+            <div class="card-body" id="card" onclick="navigator.clipboard.writeText(`{{j['full_citation']}}`);alert('Copied!');">
+                <div class="noscroll" style="width: 90%;overflow:scroll;height:100%;"><p style="text-decoration:bold;">{{j['full_citation']}}<p></div>
+            </div>
+            <div class="card-footer" style="min-height: 40px;">
+                {% if login_r %}
+                <b style="cursor: pointer;" onclick="navigator.clipboard.writeText(`{{j['full_citation']}}`);alert('Copied!');"><i class="bi bi-clipboard" style="font-size: 24;" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to Copy Citation"></i></b>
+                {% else %}
+                <a href="/delete/{{j['_id']}}" style="text-decoration: none;color:white;"><b><i class="bi bi-trash" style="font-size: 24;" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to Delete Citation"></i></b></a>&ThickSpace;&ThickSpace;
+                <b style="cursor: pointer;" onclick="navigator.clipboard.writeText(`{{j['full_citation']}}`);alert('Copied!');"><i class="bi bi-clipboard" style="font-size: 24;" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to Copy Citation"></i></b>&ThickSpace;&ThickSpace;
+                <a onclick="showModal(`{{j['_id']}}`)" style="text-decoration: none;color:white;cursor:pointer;"><b><i class="bi bi-pen" style="font-size: 24;" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to Edit Citation"></i></b></a>
+                {% endif %}
+            </div>
+        </div>
+        </div>
+        {% endfor %}
+        </div>
+       {% endfor %}
+       {% endif %}
+    </div>
+       <br>
+        </center>
+        <script>
+            function showModal(id){
+                var myModal = new bootstrap.Modal(document.getElementById(id), {
+                    keyboard: false
+                })
+                myModal.show()
+            }
+
+            function loginmsg(){
+                var myOffcanvas = document.getElementById('offcanvaslogin')
+                var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas)
+                bsOffcanvas.show()
+            }
+
+            function check(){
+                var x = document.getElementById("url").value;
+                var a = document.getElementById("ac_date").value;
+                var btn = document.getElementById("btn");
+                if(x != "" && a != ""){
+                    btn.disabled = false;
+                }
+                else{
+                    btn.disabled = true;
+                }
+            }
+
+            mybutton = document.getElementById("topbutton");
+            window.onscroll = function() {scrollFunction()};
+
+            function scrollFunction() {
+                if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                    mybutton.style.display = "block";
+                } else {
+                    mybutton.style.display = "none";
+                }
+            }
+
+            function topFunction() {
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
+            }
+        </script>
+    </body>
+</html>
