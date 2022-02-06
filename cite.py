@@ -126,6 +126,13 @@ def delete(cid):
     mongo.db.cites.delete_one({'_id': ObjectId(cid)})
     return redirect('/')
 
+@app.route('/dac')
+def deleteacc():
+    if 'username' in session:
+        mongo.db.users.delete_one({'username': session['username']})
+        session.pop('username')
+    return redirect('/')
+
 if __name__ == '__main__':
     app.secret_key = 'secretkeysecretkey'
     app.run(debug=True)
