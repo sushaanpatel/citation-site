@@ -55,7 +55,7 @@ def login():
     try:
         if request.method == "POST":
             if 'username' not in session:
-                username = request.form['username']
+                username = request.form['username'].lower()
                 password = request.form['password']
                 user = mongo.db.users.find_one({'username': username})
                 if user['username'] is not None:
@@ -82,7 +82,7 @@ def logout():
 def register():
     if request.method == "POST":
         email = request.form['email']
-        username = request.form['username']
+        username = request.form['username'].lower()
         password = request.form['password']
         user = mongo.db.users.find_one({'username': username})
         if user is None:
