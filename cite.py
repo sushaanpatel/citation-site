@@ -39,9 +39,9 @@ def index():
             temp = list(session['citation'])
             temp2 = temp
             all_cites = """"""
-            cites = sorted(temp2, key=lambda x: x['full_citation'])
+            cites = sorted(temp2, key=lambda x: x['full_citation'].lower())
             for i in cites:
-                all_cites = all_cites + i['full_citation'] + '\n'
+                all_cites = all_cites + i['full_citation'] + '\n\n'
             temp = temp[::-1]
             temp = format(temp)
             err = request.args.get('err')

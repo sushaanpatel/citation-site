@@ -69,3 +69,34 @@ class Website(Citation):
         if (self.author == ""):
             text = (f""""{title}" {self.publisher if self.publisher != "" else "Np"}., {year + ". " if year != "" else ""}Web. {self.ac_date}. <{self.url}>.""")
         mongo.db.cites.update_one({'_id': ObjectId(cid)},{"$set": {'user': self.username, 'author': self.author, 'web_title': title, 'ac_date': self.ac_date, 'pub_year': self.year, 'publisher': self.publisher, 'url': self.url, 'full_citation': text, 'icon': icon}})
+        
+        
+"""Wikipedia. Taking Photo. 2022. Web. 7 Feb. 2022 . <https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/330px-Image_created_with_a_mobile_phone.png>."""
+class Image(Citation):
+    def citeit(self):
+        a = self.author.split(' ')
+        web = scrape(self.url)
+        title = web['title']
+        icon = web['icon']
+        fname = None
+        lname = None
+        text = None
+        year = self.year.split('-')[0]
+        if (len(a) == 1):
+            lname = a[0]
+            text = (f"""{lname}. "{title}" {self.publisher if self.publisher != "" else "Np"}., {year + ". " if year != "" else ""}Web. {self.ac_date}. <{self.url}>.""")
+        else:
+            fname = a[0]
+            lname = a[1]
+            text = (f"""{lname}, {fname}. "{title}" {self.publisher if self.publisher != "" else "Np"}., {year + ". " if year != "" else ""}Web. {self.ac_date}. <{self.url}>.""")
+        if (self.author == ""):
+            text = (f""""{title}" {self.publisher if self.publisher != "" else "Np"}., {year + ". " if year != "" else ""}Web. {self.ac_date}. <{self.url}>.""")
+        if self.username != 'ano':
+            mongo.db.cites.insert_one({'user': self.username, 'author': self.author, 'web_title': title, 'ac_date': self.ac_date, 'pub_year': self.year, 'publisher': self.publisher, 'url': self.url, 'full_citation': text, 'icon': icon})
+        else:
+            if 'citation' in session:
+                clist = list(session['citation'])
+                clist.append({'user': self.username, 'author': self.author, 'web_title': title, 'ac_date': self.ac_date, 'pub_year': self.year, 'publisher': self.publisher, 'url': self.url, 'full_citation': text, 'icon': icon})
+                session['citation'] = clist
+            else:
+                session['citation'] = [{'user': self.username, 'author': self.author, 'web_title': title, 'ac_date': self.ac_date, 'pub_year': self.year, 'publisher': self.publisher, 'url': self.url, 'full_citation': text, 'icon': icon}]
