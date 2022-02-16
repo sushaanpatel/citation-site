@@ -171,9 +171,13 @@
         <div class="modal fade" id="addcite" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable">
               <div class="modal-content" style="background-color: #222222;">
-                <div class="modal-body">
+                <div class="modal-body" id="modal">
                     <form action="/cite" method="POST">
                         <br>
+                        <select name="type" id="type" class="form-select" style="background-color: #4b6cb7;border:1px solid #4b6cb7;margin-bottom:1%;color:white;width:50%;" oninput="change()">
+                            <option value="web">Website</option>
+                            <option value="img">Image/Video</option>
+                        </select>
                         <input type="url" name="url" id="url" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Url">
                         <input type="text" name="author" id="author" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Author">
                         <input type="text" name="publisher" id="publisher" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Publisher">
@@ -204,10 +208,13 @@
         <div class="modal fade" id="{{j['_id']}}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable">
               <div class="modal-content" style="background-color: #222222;">
-                <div class="modal-body"> 
+                <div class="modal-body" id="modal"> 
                     <form action="/edit/{{j['_id']}}" method="POST">
                         <br>
                         <input type="url" name="url" id="eurl" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #222222;color:white;" placeholder="Url" value="{{j['url']}}">
+                        {% if j['type'] == 'img' %}
+                        <input type="title" name="title" id="title" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #222222;color:white;" placeholder="Image Title" value="{{j['web_title']}}">
+                        {% endif %}
                         <input type="text" name="author" id="eauthor" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Author" value="{{j['author']}}">
                         <input type="text" name="publisher" id="epublisher" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Publisher" value="{{j['publisher']}}">
                         <label for="ac_date"><b>Access Date</b></label>
@@ -248,6 +255,55 @@
        <br>
         </center>
         <script>
+            function change(){
+                var mod = document.getElementById("modal")
+                var type = document.getElementById("type")
+                if (type.value == "web"){
+                    mod.innerHTML = 
+                    `
+                    <form action="/cite" method="POST">
+                        <br>
+                        <select name="type" id="type" class="form-select" style="background-color: #4b6cb7;border:1px solid #4b6cb7;margin-bottom:1%;color:white;width:50%;" oninput="change()">
+                            <option value="web">Website</option>
+                            <option value="img">Image/Video</option>
+                        </select>
+                        <input type="url" name="url" id="url" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Url">
+                        <input type="text" name="author" id="author" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Author">
+                        <input type="text" name="publisher" id="publisher" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Publisher">
+                        <label for="ac_date"><b>Access Date</b></label>
+                        <input type="date" name="ac_date" id="ac_date" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Access Date">
+                        <label for="pub_date"><b>Publification Date</b></label>
+                        <input type="date" name="pub_date" id="pub_date" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Publification Date">
+                        <br>
+                        <input type="submit" id="btn" value="Cite" disabled="true" class="btn btn-primary">
+                    </form>
+                    `
+                } else {
+                    mod.innerHTML = 
+                    `
+                    <form action="/cite" method="POST">
+                        <br>
+                        <select name="type" id="type" class="form-select" style="background-color: #4b6cb7;border:1px solid #4b6cb7;margin-bottom:1%;color:white;width:50%;" oninput="change()">
+                            <option value="web">Website</option>
+                            <option value="img" selected>Image/Video</option>
+                        </select>
+                        <input type="url" name="url" id="url" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Url">
+                        <input type="text" name="title" id="title" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Image Title">
+                        <input type="text" name="author" id="author" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Author">
+                        <input type="text" name="publisher" id="publisher" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Publisher">
+                        <label for="ac_date"><b>Access Date</b></label>
+                        <input type="date" name="ac_date" id="ac_date" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Access Date">
+                        <label for="pub_date"><b>Publification Date</b></label>
+                        <input type="date" name="pub_date" id="pub_date" oninput="check()" class="form-control" style="background-color: #424242;width:80%;margin-bottom:1%;border:2px #424242;color:white;" placeholder="Publification Date">
+                        <br>
+                        <input type="submit" id="btn" value="Cite" disabled="true" class="btn btn-primary">
+                    </form>
+                    `
+                }
+            }
+
+
+
             function showModal(id){
                 var myModal = new bootstrap.Modal(document.getElementById(id), {
                     keyboard: false

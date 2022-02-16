@@ -1,5 +1,5 @@
 from bson.objectid import ObjectId
-from models import Website, app, mongo
+from models import Website, app, mongo, Image
 from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -39,7 +39,7 @@ def index():
             temp = list(session['citation'])
             temp2 = temp
             all_cites = """"""
-            cites = sorted(temp2, key=lambda x: x['full_citation'].lower())
+            cites = sorted(temp2, key=lambda x: x['full_citation'].lower)
             for i in cites:
                 all_cites = all_cites + i['full_citation'] + '\n\n'
             temp = temp[::-1]
@@ -95,30 +95,39 @@ def register():
 @app.route('/cite', methods=['POST'])
 def add():
     if request.method == 'POST':
+        ctype = request.form['type']
         url = request.form['url']
+        try:
+            title = request.form['title']
+        except:
+            title = ""
         author = request.form['author']
         publisher = request.form['publisher']
         ac_date = request.form['ac_date']
         year = request.form['pub_date']
         if 'username' in session:
-            web = Website(author, publisher, ac_date, year, url, session['username'])
-            web.citeit()
+            c = Website(author, publisher, ac_date, year, url, session['username'], "") if ctype == 'web' else Image(author, publisher, ac_date, year, url, session['username'], title)
+            c.citeit()
         else:
-            web = Website(author, publisher, ac_date, year, url, "ano")
-            web.citeit()
+            c = Website(author, publisher, ac_date, year, url, "ano", "") if ctype == 'web' else Image(author, publisher, ac_date, year, url, "ano", title)
+            c.citeit()
         return redirect('/')
 
 @app.route('/edit/<cid>', methods=['POST'])
 def edit(cid):
     if request.method == 'POST':
         url = request.form['url']
+        try:
+            title = request.form['title']
+        except:
+            title = ""
         author = request.form['author']
         publisher = request.form['publisher']
         ac_date = request.form['ac_date']
         year = request.form['pub_date']
-        web = Website(author, publisher, ac_date, year, url, session['username'])
-        print(cid)
-        web.update(str(cid))
+        x = mongo.db.cites.find_one({'_id': ObjectId(cid)})
+        c = Website(author, publisher, ac_date, year, url, session['username'], title) if x['type'] == 'web' else Image(author, publisher, ac_date, year, url, session['username'], title)
+        c.update(str(cid))
         return redirect('/')
 
 @app.route('/delete/<cid>')
