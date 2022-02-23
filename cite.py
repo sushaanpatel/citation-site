@@ -57,6 +57,8 @@ def login():
             if 'username' not in session:
                 username = request.form['username'].lower()
                 password = request.form['password']
+                if username == "" or password == "":
+                    return redirect('/?err=1')
                 user = mongo.db.users.find_one({'username': username})
                 if user['username'] is not None:
                     if check_password_hash(user['password'], password):
@@ -84,6 +86,8 @@ def register():
         email = request.form['email']
         username = request.form['username'].lower()
         password = request.form['password']
+        if email == "" or username == "" or password == "":
+            return redirect('/?err=2')
         user = mongo.db.users.find_one({'username': username})
         if user is None:
             mongo.db.users.insert_one({'username': username, 'password': generate_password_hash(password, "sha256"), 'email': email})
