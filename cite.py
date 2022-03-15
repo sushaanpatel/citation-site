@@ -23,9 +23,10 @@ def format(unformat):
     return formated_list
 
 @app.route('/')
-def index():
+def folders():
     if 'username' in session:
-        temp = list(mongo.db.cites.find({'user': session['username']}))
+        folders = list(mongo.db.folders.find({'user': session['username']}))
+        temp = list(mongo.db.cites.find({'user': session['username'], 'tags': 'default'}))
         temp2 = temp
         all_cites = """"""
         cites = sorted(temp2, key=lambda x: x['full_citation'].split('.')[0].lower())
@@ -33,7 +34,7 @@ def index():
             all_cites = all_cites + i['full_citation'] + '\n'
         temp = temp[::-1]
         temp = format(temp)
-        return render_template('index.html', cites=cites, all=all_cites, temp=temp, session=session, login_r=False)
+        return render_template('index.html', cites=cites, all=all_cites, temp=temp, session=session, login_r=False, folders=folders)
     else:
         if 'citation' in session:
             temp = list(session['citation'])
@@ -45,11 +46,51 @@ def index():
             temp = temp[::-1]
             temp = format(temp)
             err = request.args.get('err')
-            return render_template('index.html', session=session, cites=cites, temp=temp, all=all_cites, login_r=True, err = err)
+            return render_template('index.html', session=session, cites=cites, temp=temp, all=all_cites, login_r=True, err = err, folders=[])
         else:
             err = request.args.get('err')
-            return render_template('index.html', session=session, cites=[], temp=[], all="", login_r=True, err = err)
+            return render_template('index.html', session=session, cites=[], temp=[], all="", login_r=True, err = err, folders=[])
 
+@app.route('/citations/<folder>')
+def index(folder):
+    if 'username' in session:
+        folders = list(mongo.db.folders.find({'user': session['username']}))
+        for i in folders:
+            if i['name'] == folder:
+                temp = list(mongo.db.cites.find({'user': session['username'], 'tags': folder}))
+                temp2 = temp
+                all_cites = """"""
+                cites = sorted(temp2, key=lambda x: x['full_citation'].split('.')[0].lower())
+                for i in cites:
+                    all_cites = all_cites + i['full_citation'] + '\n'
+                temp = temp[::-1]
+                temp = format(temp)
+                print(folders)
+                return render_template('folders.html', cites=cites, all=all_cites, temp=temp, session=session, login_r=False, err='0', delop=True, fol=folder, folders=folders)
+        else:
+            return render_template('folders.html', cites=[], all="", temp=[], session=session, login_r=False, err='3', delop=False)
+
+@app.route('/addfolder', methods=['POST'])
+def addf():
+    if request.method == 'POST':
+        name = request.form['fname']
+        f = list(mongo.db.folders.find({'user': session['username']}))
+        n = 0
+        for i in f:
+            if i['name'] == name:
+                n += 1
+                name = name + f'({n})'
+        mongo.db.folders.insert_one({'name': name, 'user': session['username']})
+        return redirect('/')
+    
+@app.route('/deletefolder/<folder>')
+def delf(folder):
+    if 'username' in session:
+        f = list(mongo.db.folders.find({'name': folder, 'user': session['username']}))
+        if f != []:
+            mongo.db.folders.delete_one({'name': folder, 'user': session['username']})
+        return redirect('/')
+    
 @app.route('/login', methods=['POST'])
 def login():
     try:
@@ -109,8 +150,10 @@ def add():
         publisher = request.form['publisher']
         ac_date = request.form['ac_date']
         year = request.form['pub_date']
+        f = request.form['folder']
+        folder = f if f != "" else 'default'
         if 'username' in session:
-            c = Website(author, publisher, ac_date, year, url, session['username'], "") if ctype == 'web' else Image(author, publisher, ac_date, year, url, session['username'], title)
+            c = Website(author, publisher, ac_date, year, url, session['username'], "", folder) if ctype == 'web' else Image(author, publisher, ac_date, year, url, session['username'], title, folder)
             c.citeit()
         else:
             c = Website(author, publisher, ac_date, year, url, "ano", "") if ctype == 'web' else Image(author, publisher, ac_date, year, url, "ano", title)
@@ -129,8 +172,9 @@ def edit(cid):
         publisher = request.form['publisher']
         ac_date = request.form['ac_date']
         year = request.form['pub_date']
+        folder = request.form['folder']
         x = mongo.db.cites.find_one({'_id': ObjectId(cid)})
-        c = Website(author, publisher, ac_date, year, url, session['username'], title) if x['type'] == 'web' else Image(author, publisher, ac_date, year, url, session['username'], title)
+        c = Website(author, publisher, ac_date, year, url, session['username'], title, folder) if x['type'] == 'web' else Image(author, publisher, ac_date, year, url, session['username'], title, folder)
         c.update(str(cid))
         return redirect('/')
 

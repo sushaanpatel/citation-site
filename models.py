@@ -13,7 +13,7 @@ app.config["SECRET_KEY"] = f'secretkeysecretkey'
 mongo = PyMongo(app)
 
 class Citation:
-     def __init__(self,author,publisher,ac_date,year,url,username, web_title):
+     def __init__(self,author,publisher,ac_date,year,url,username, web_title, folder):
         self.author = author
         self.ac_date = ac_date
         self.year = year
@@ -21,6 +21,7 @@ class Citation:
         self.url = url
         self.username = username
         self.web_title = web_title
+        self.folder = folder
 
 class Website(Citation):
     def citeit(self):
@@ -42,7 +43,7 @@ class Website(Citation):
         if (self.author == ""):
             text = (f""""{title}" {self.publisher if self.publisher != "" else "Np"}., {year + ". " if year != "" else ""}Web. {self.ac_date}. <{self.url}>.""")
         if self.username != 'ano':
-            mongo.db.cites.insert_one({'user': self.username, 'author': self.author, 'web_title': title, 'ac_date': self.ac_date, 'pub_year': self.year, 'publisher': self.publisher, 'url': self.url, 'full_citation': text, 'icon': icon, 'type': 'web'})
+            mongo.db.cites.insert_one({'user': self.username, 'author': self.author, 'web_title': title, 'ac_date': self.ac_date, 'pub_year': self.year, 'publisher': self.publisher, 'url': self.url, 'full_citation': text, 'icon': icon, 'type': 'web', 'tags': self.folder})
         else:
             if 'citation' in session:
                 clist = list(session['citation'])
@@ -69,7 +70,7 @@ class Website(Citation):
             text = (f"""{lname}, {fname}. "{title}" {self.publisher if self.publisher != "" else "Np"}., {year + ". " if year != "" else ""}Web. {self.ac_date}. <{self.url}>.""")
         if (self.author == ""):
             text = (f""""{title}" {self.publisher if self.publisher != "" else "Np"}., {year + ". " if year != "" else ""}Web. {self.ac_date}. <{self.url}>.""")
-        mongo.db.cites.update_one({'_id': ObjectId(cid)},{"$set": {'user': self.username, 'author': self.author, 'web_title': title, 'ac_date': self.ac_date, 'pub_year': self.year, 'publisher': self.publisher, 'url': self.url, 'full_citation': text, 'icon': icon, 'type': 'web'}})
+        mongo.db.cites.update_one({'_id': ObjectId(cid)},{"$set": {'user': self.username, 'author': self.author, 'web_title': title, 'ac_date': self.ac_date, 'pub_year': self.year, 'publisher': self.publisher, 'url': self.url, 'full_citation': text, 'icon': icon, 'type': 'web', 'tags': self.folder}})
         
         
 """Wikipedia. Taking Photo. 2022. Web. 7 Feb. 2022 . <https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/330px-Image_created_with_a_mobile_phone.png>."""
@@ -92,7 +93,7 @@ class Image(Citation):
         if (self.author == ""):
             text = (f"""{title}. {year + ". " if year != "" else ""}Web. {self.ac_date}. <{self.url}>.""")
         if self.username != 'ano':
-            mongo.db.cites.insert_one({'user': self.username, 'author': self.author, 'web_title': title, 'ac_date': self.ac_date, 'pub_year': self.year, 'publisher': self.publisher, 'url': self.url, 'full_citation': text, 'icon': icon, 'type': 'img'})
+            mongo.db.cites.insert_one({'user': self.username, 'author': self.author, 'web_title': title, 'ac_date': self.ac_date, 'pub_year': self.year, 'publisher': self.publisher, 'url': self.url, 'full_citation': text, 'icon': icon, 'type': 'img', 'tags': self.folder})
         else:
             if 'citation' in session:
                 clist = list(session['citation'])
@@ -118,5 +119,5 @@ class Image(Citation):
             text = (f"""{lname}, {fname}. {title}. {year + ". " if year != "" else ""}Web. {self.ac_date}. <{self.url}>.""")
         if (self.author == ""):
             text = (f"""{title}. {year + ". " if year != "" else ""}Web. {self.ac_date}. <{self.url}>.""")
-        mongo.db.cites.update_one({'_id': ObjectId(cid)},{"$set": {'user': self.username, 'author': self.author, 'web_title': title, 'ac_date': self.ac_date, 'pub_year': self.year, 'publisher': self.publisher, 'url': self.url, 'full_citation': text, 'icon': icon, 'type': 'img'}})
+        mongo.db.cites.update_one({'_id': ObjectId(cid)},{"$set": {'user': self.username, 'author': self.author, 'web_title': title, 'ac_date': self.ac_date, 'pub_year': self.year, 'publisher': self.publisher, 'url': self.url, 'full_citation': text, 'icon': icon, 'type': 'img', 'tags': self.folder}})
         

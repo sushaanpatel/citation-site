@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<h3 style="color:#141E27;"><b><i class="bi bi-folder-fill" style="color:#141E27;font-size:22px;"></i>{{ fol }}</b></h3>
+<br>
+<div class="container-fluid" style="width: 85%;padding:0;margin-right:5px;margin-left:5px;">
+    {% if err == "3" %}
+    <p class="alert alert-danger" style="cursor:pointer;font-size:22px;width:50%;">Folder does not exist</p>
+    <a href="/" class="butn" style="font-size: 25px;"><b><i class="bi bi-house-door-fill"></i></b></a>
+    {% else%}
+    {% if login_r == true %}<p class="alert alert-danger" style="cursor:pointer;font-size:16px;width:50%;" onclick="loginmsg()">Login to your account to save and edit your citations! your citations will be saved temporarily without login </p>{% endif %}
+    {% if temp == []%}
+    <center>
+        <h2 style="color: #141E27;">Folder has No Citations :(</h2>
+        <br>
+        <button class="butn" type="button" data-bs-toggle="modal" data-bs-target="#addcite" aria-expanded="false" aria-controls="addcite" style=" font-size:20px;border-radius:10px;"><b>Add Citation</b></button>
+    </center>
+    {% else %}
+    {% for i in temp %}
+    <div class="row">
+    {% for j in i %}
+    <div class="modal fade" id="{{j['_id']}}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content" style="background-color:#141E27;">
+            <div class="modal-body" id="modal"> 
+                <form action="/edit/{{j['_id']}}" method="POST">
+                    <br>
+                    <input type="url" name="url" id="eurl" oninput="check()" class="form-control input" placeholder="Url" value="{{j['url']}}">
+                    {% if j['type'] == 'img' %}
+                    <input type="title" name="title" id="title" oninput="check()" class="form-control input" placeholder="Image Title" value="{{j['web_title']}}">
+                    {% endif %}
+                    <input type="text" name="author" id="eauthor" oninput="check()" class="form-control input" placeholder="Author" value="{{j['author']}}">
+                    <input type="text" name="publisher" id="epublisher" oninput="check()" class="form-control input" placeholder="Publisher" value="{{j['publisher']}}">
+                    <label for="ac_date"><b>Access Date</b></label>
+                    <input type="date" name="ac_date" id="eac_date" oninput="check()" class="form-control input" placeholder="Access Date" value="{{j['ac_date']}}">
+                    <label for="pub_date"><b>Publification Date</b></label>
+                    <input type="date" name="pub_date" id="epub_date" oninput="check()" class="form-control input" placeholder="Publification Date" value="{{j['pub_year']}}">
+                    <select name="folder" id="folder" class="form-select input">
+                        <option value="">Select Folder</option>
+                        <option value="default">Default</option>
+                        {% for f in folders %}
+                        <option value="{{f['name']}}">{{f['name']}}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
+                    <input type="submit" value="Edit" class="lbutn">
+                </form>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="col col-lg">
+    <div class="cite card">
+        <a href="{{j['url']}}" target="_blank" style="text-decoration: none;color:#E0DDAA;"><div class="card-header">
+            <b><img src="{{j['icon']}}" alt="icon" width="5%" style="border-radius: 5px;"> "{{j['web_title']}}"</b>
+        </div></a>
+        <div class="card-body" id="card" onclick="navigator.clipboard.writeText(`{{j['full_citation']}}`);alert('Copied!');">
+            <div class="noscroll" style="width: 90%;overflow:scroll;height:100%;"><p style="text-decoration:bold;">{{j['full_citation']}}<p></div>
+        </div>
+        <div class="card-footer" style="min-height: 40px;">
+            {% if login_r %}
+            <b style="cursor: pointer;" onclick="navigator.clipboard.writeText(`{{j['full_citation']}}`);alert('Copied!');"><i class="bi bi-clipboard" style="font-size: 24;" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to Copy Citation"></i></b>
+            {% else %}
+            <a href="/delete/{{j['_id']}}" style="text-decoration: none;color:E0DDAA;"><b><i class="bi bi-trash" style="font-size: 24;" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to Delete Citation"></i></b></a>&ThickSpace;&ThickSpace;
+            <b style="cursor: pointer;" onclick="navigator.clipboard.writeText(`{{j['full_citation']}}`);alert('Copied!');"><i class="bi bi-clipboard" style="font-size: 24;" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to Copy Citation"></i></b>&ThickSpace;&ThickSpace;
+            <a onclick="showModal(`{{j['_id']}}`)" style="text-decoration: none;color:E0DDAA;cursor:pointer;"><b><i class="bi bi-pen" style="font-size: 24;" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to Edit Citation"></i></b></a>
+            {% endif %}
+        </div>
+    </div>
+    </div>
+    {% endfor %}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endif %}
+</div>
+    <br>
+    </center>
+{% endblock %}
