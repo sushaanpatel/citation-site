@@ -24,6 +24,7 @@ def format(unformat):
 
 @app.route('/')
 def folders():
+    session['cp'] = '/'
     if 'username' in session:
         folders = list(mongo.db.folders.find({'user': session['username']}))
         temp = list(mongo.db.cites.find({'user': session['username'], 'tags': 'default'}))
@@ -53,7 +54,10 @@ def folders():
 
 @app.route('/citations/<folder>')
 def index(folder):
+    session['cp'] = f'/citations/{folder}'
     if 'username' in session:
+        if folder == "" or folder == "default":
+            return redirect('/')
         folders = list(mongo.db.folders.find({'user': session['username']}))
         for i in folders:
             if i['name'] == folder:
@@ -65,7 +69,6 @@ def index(folder):
                     all_cites = all_cites + i['full_citation'] + '\n'
                 temp = temp[::-1]
                 temp = format(temp)
-                print(folders)
                 return render_template('folders.html', cites=cites, all=all_cites, temp=temp, session=session, login_r=False, err='0', delop=True, fol=folder, folders=folders)
         else:
             return render_template('folders.html', cites=[], all="", temp=[], session=session, login_r=False, err='3', delop=False)
@@ -155,10 +158,11 @@ def add():
         if 'username' in session:
             c = Website(author, publisher, ac_date, year, url, session['username'], "", folder) if ctype == 'web' else Image(author, publisher, ac_date, year, url, session['username'], title, folder)
             c.citeit()
+            return redirect(f'/citations/{folder}')
         else:
-            c = Website(author, publisher, ac_date, year, url, "ano", "") if ctype == 'web' else Image(author, publisher, ac_date, year, url, "ano", title)
+            c = Website(author, publisher, ac_date, year, url, "ano", "", '') if ctype == 'web' else Image(author, publisher, ac_date, year, url, "ano", title, '')
             c.citeit()
-        return redirect('/')
+            return redirect('/')
 
 @app.route('/edit/<cid>', methods=['POST'])
 def edit(cid):
@@ -176,12 +180,12 @@ def edit(cid):
         x = mongo.db.cites.find_one({'_id': ObjectId(cid)})
         c = Website(author, publisher, ac_date, year, url, session['username'], title, folder) if x['type'] == 'web' else Image(author, publisher, ac_date, year, url, session['username'], title, folder)
         c.update(str(cid))
-        return redirect('/')
+        return redirect(f'/citations/{folder}')
 
 @app.route('/delete/<cid>')
 def delete(cid):
     mongo.db.cites.delete_one({'_id': ObjectId(cid)})
-    return redirect('/')
+    return redirect(session['cp'])
 
 @app.route('/dac')
 def deleteacc():

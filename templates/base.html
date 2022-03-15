@@ -289,8 +289,12 @@
                         <input type="date" name="ac_date" id="ac_date" oninput="check()" class="form-control input"  placeholder="Access Date">
                         <label for="pub_date"><b>Publification Date</b></label>
                         <input type="date" name="pub_date" id="pub_date" oninput="check()" class="form-control input"  placeholder="Publification Date">
+                        {% if 'username' in session %}
                         <select name="folder" id="folder" class="form-select input">
-                            <option value="">Select Folder</option>
+                        {% else %}
+                        <select name="folder" id="folder" class="form-select input" style="display: none;">
+                        {% endif %}
+                        <option value="">Select Folder</option>
                             <option value="default">Default</option>
                             {% for f in folders %}
                             <option value="{{f['name']}}">{{f['name']}}</option>
