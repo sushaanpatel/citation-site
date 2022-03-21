@@ -190,6 +190,9 @@ def delete(cid):
 @app.route('/dac')
 def deleteacc():
     if 'username' in session:
+        allc = list(mongo.db.cites.find({'user': session['username']}))
+        for i in allc:
+            mongo.db.cites.delete_one(i)
         mongo.db.users.delete_one({'username': session['username']})
         session.pop('username')
     return redirect('/')

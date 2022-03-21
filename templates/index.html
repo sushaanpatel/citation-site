@@ -59,15 +59,15 @@
             <a href="{{j['url']}}" target="_blank" style="text-decoration: none;color:#E0DDAA;"><div class="card-header">
                 <b><img src="{{j['icon']}}" alt="icon" width="5%" style="border-radius: 5px;"> "{{j['web_title']}}"</b>
             </div></a>
-            <div class="card-body" id="card" onclick="navigator.clipboard.writeText(`{{j['full_citation']}}`);alert('Copied!');">
+            <div class="card-body" id="card" onclick="cpy(`{{j['full_citation']}}`)" data-bs-toggle="tooltip" data-bs-placement="right" title="Click to Copy Citation">
                 <div class="noscroll" style="width: 90%;overflow:scroll;height:100%;"><p style="text-decoration:bold;">{{j['full_citation']}}<p></div>
             </div>
             <div class="card-footer" style="min-height: 40px;">
                 {% if login_r %}
-                <b style="cursor: pointer;" onclick="navigator.clipboard.writeText(`{{j['full_citation']}}`);alert('Copied!');"><i class="bi bi-clipboard" style="font-size: 24;" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to Copy Citation"></i></b>
+                <b style="cursor: pointer;" onclick="cpy(`{{j['full_citation']}}`)"><i class="bi bi-clipboard" style="font-size: 24;" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to Copy Citation"></i></b>
                 {% else %}
                 <a href="/delete/{{j['_id']}}" style="text-decoration: none;color:E0DDAA;"><b><i class="bi bi-trash" style="font-size: 24;" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to Delete Citation"></i></b></a>&ThickSpace;&ThickSpace;
-                <b style="cursor: pointer;" onclick="navigator.clipboard.writeText(`{{j['full_citation']}}`);alert('Copied!');"><i class="bi bi-clipboard" style="font-size: 24;" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to Copy Citation"></i></b>&ThickSpace;&ThickSpace;
+                <b style="cursor: pointer;" onclick="cpy(`{{j['full_citation']}}`)"><i class="bi bi-clipboard" style="font-size: 24;" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to Copy Citation"></i></b>&ThickSpace;&ThickSpace;
                 <a onclick="showModal(`{{j['_id']}}`)" style="text-decoration: none;color:E0DDAA;cursor:pointer;"><b><i class="bi bi-pen" style="font-size: 24;" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to Edit Citation"></i></b></a>
                 {% endif %}
             </div>
