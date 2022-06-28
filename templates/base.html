@@ -157,74 +157,67 @@
         {% block head %}{% endblock %}
     </head>
     <body>
+        <!-- Add folder and delete account offcanvas  -->
+        <div class="offcanvas offcanvas-bottom" tabindex="-1" id="af" aria-labelledby="offcanvasBottomLabel" style="background-color: #141E27;">
+            {% if delop %}
+            <div class="offcanvas-header">
+              <h5 class="offcanvas-title">Delete Folder</h5>
+              <button type="button" class="butn" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="offcanvas-body small">
+                <center>
+                <p style="font-size: 20px;">Are you sure you want to delete this folder and its contents?</p>
+                <a href='/deletefolder/{{fol}}' class="btn btn-danger" style="border-radius: 20px;">Yes, Delete Folder</a>
+                </center>
+            </div>
+            {% else %}
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title">Create Folder</h5>
+                <button type="button" class="butn" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+              </div>
+              <div class="offcanvas-body small" style="width: 40%;">
+                <center>
+                <form action="/addfolder" method="POST" style="text-align: left;">
+                <input type="text" class="form-control input" name="fname" id="fname" placeholder="Folder Name" oninput="checkf()" style="font-size: 20px;margin-bottom:2%;">
+                
+                <input type="submit" value="Create" class="lbutn" id="fbtn" disabled=true style="font-size: 18px;">
+                </form>
+                </center>
+            </div>
+            {% endif %}
+        </div>
+        <!-- Delete Offcanvas -->
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="del" aria-labelledby="del" aria-hidden="true" style="background-color: #141E27;">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title">Are you Sure?</h5>
+                <button type="button" class="butn" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+              </div>
+              <div class="offcanvas-body small">
+                <p>You won't be able to recover your account after deletion</p><br>
+                <a href="/dac" class="btn btn-danger" style="font-size:22px;">Delete Account</a>
+            </div>
+        </div>
         <!-- offcanvas nav -->
         <button class="butn" style="float:left;margin:10px;font-size:30px;z-index:99;position:fixed;border-radius:20px;" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasmenu" aria-controls="offcanvasmenu"><i class="bi bi-list"></i></button>
         <!-- offcanvas menu -->
         <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasmenu" aria-labelledby="offcanvasTopLabel" style="background-color: #141E27;">
             <div class="offcanvas-header">
-                <h5 id="offcanvasTopLabel">Menu</h5>
+                <h5>Menu</h5>
                 <button type="button" class="butn" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x-lg"></i></button>
             </div>
             <div class="offcanvas-body">
                 {% if 'username' in session %}
                 <p style="font-size:20px;width:150px;">{{session['username']}}</p>
                 <a href="/" class="lbutn" style="font-size: 25px;"><b><i class="bi bi-house-door-fill"></i></b></a><br><br>
-                <!-- Add folder modal -->
-                <div class="modal fade" id="af" tabindex="-1" aria-labelledby=af" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-scrollable">
-                      <div class="modal-content" style="background-color: #141E27;">
-                        {% if delop %}
-                        <div class="modal-header" style="border: 0px;">
-                            <h5 class="modal-title">Delete Folder</h5>
-                            <button type="button" class="butn" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
-                          </div>
-                          <div class="modal-body">
-                              <center>
-                              Are you sure you want to delete this folder and its contents?<br>
-                              <a href='/deletefolder/{{fol}}' class="btn btn-danger" style="border-radius: 20px;">Yes, Delete Folder</a>
-                              </center>
-                        </div>
-                        {% else %}
-                        <div class="modal-header" style="border: 0px;">
-                          <h5 class="modal-title">Create Folder</h5>
-                          <button type="button" class="butn" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
-                        </div>
-                        <div class="modal-body">
-                            <center>
-                            <form action="/addfolder" method="POST">
-                                <input type="text" class="form-control input" name="fname" id="fname" placeholder="Folder Name" oninput="checkf()">
-                                <br>
-                                <input type="submit" value="Create" class="lbutn" id="fbtn" disabled=true>
-                            </form>
-                            </center>
-                        </div>
-                        {% endif %}
-                      </div>
-                    </div>
-                </div>
+                <!-- change trigger class and complete offcanvas  -->
                 {% if delop %}
-                <button data-bs-toggle="modal" data-bs-target="#af" class="lbutn" style="font-size: 22px;"><i class="bi bi-folder-x"></i>Remove Folder</button><br><br>
+                <button data-bs-toggle="offcanvas" data-bs-target="#af" class="lbutn" style="font-size: 22px;"><i class="bi bi-folder-x"></i>Remove Folder</button><br><br>
                 {% else %}
-                <button data-bs-toggle="modal" data-bs-target="#af" class="lbutn" style="font-size: 22px;"><i class="bi bi-folder-plus"></i>Add Folder</button><br><br>
+                <button data-bs-toggle="offcanvas" data-bs-target="#af" class="lbutn" style="font-size: 22px;"><i class="bi bi-folder-plus"></i>Add Folder</button><br><br>
                 {% endif %}
                 <hr style="background-color:#E0DDAA;height:3px;border-radius:5px;">
                 <a href="/logout" class="lbutn" style="font-size:22px;width:150px;text-decoration:none;"><i class="bi bi-box-arrow-in-left"></i> Log-Out</a><br><br>
-                <!-- Delete account modal -->
-                <div class="modal fade" id="del" tabindex="-1" aria-labelledby="del" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-scrollable modal-lg">
-                      <div class="modal-content" style="background-color: #141E27;">
-                        <div class="modal-header" style="border: 0px;">
-                          <h5 class="modal-title" id="exampleModalLabel">Are you Sure?</h5>
-                        <button type="button" class="butn" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
-                        </div>
-                        <div class="modal-body">
-                            <p>You won't be able to recover your account after deletion</p><br>
-                            <a href="/dac" class="btn btn-danger" style="font-size:22px;">Delete Account</a>
-                        </div>
-                      </div>
-                    </div>
-                </div>
-                <a data-bs-toggle="modal" data-bs-target="#del" class="btn btn-danger" style="font-size:22px;width:150px;border-radius:20px;">Delete</a>
+                <a data-bs-toggle="offcanvas" data-bs-target="#del" class="btn btn-danger" style="font-size:22px;width:220px;border-radius:20px;">Delete Account</a>
                 {% else %}
                 <button class="lbutn" style="font-size:22px;width:150px;" data-bs-toggle="offcanvas" data-bs-target="#offcanvaslogin" aria-controls="offcanvaslogin"><i class="bi bi-box-arrow-in-right"></i> Log-in</button>
                 <br><br>
@@ -442,7 +435,7 @@
             }
 
             mybutton = document.getElementById("topbutton");
-            window.onscroll = function() {scrollFunction()};
+            window.onscroll = function(){scrollFunction()};
 
             function scrollFunction() {
                 if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
