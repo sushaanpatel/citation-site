@@ -3,6 +3,7 @@ from models import Website, app, mongo, Image
 from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
 
+# Function to format list output
 def format(unformat):
     lenght = len(unformat)
     count = 0
@@ -22,6 +23,7 @@ def format(unformat):
             count += 2
     return formated_list
 
+# Main route
 @app.route('/')
 def folders():
     session['cp'] = '/'
