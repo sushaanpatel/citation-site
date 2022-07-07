@@ -41,7 +41,7 @@
                         <label for="pub_date"><b>Publification Date</b></label>
                         <input type="date" name="pub_date" id="epub_date" oninput="check()" class="form-control input" placeholder="Publification Date" value="{{j['pub_year']}}">
                         <select name="folder" id="folder" class="form-select input">
-                            <option value="">Select Folder</option>
+                            <option value="default">Select Folder</option>
                             <option value="default">Default</option>
                             {% for f in folders %}
                             <option value="{{f['name']}}">{{f['name']}}</option>

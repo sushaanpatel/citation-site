@@ -182,7 +182,10 @@ def edit(cid):
         x = mongo.db.cites.find_one({'_id': ObjectId(cid)})
         c = Website(author, publisher, ac_date, year, url, session['username'], title, folder) if x['type'] == 'web' else Image(author, publisher, ac_date, year, url, session['username'], title, folder)
         c.update(str(cid))
-        return redirect(f'/citations/{folder}')
+        if folder == '':
+            return redirect(f'/')
+        else:
+            return redirect(f'/citations/{folder}')
 
 @app.route('/delete/<cid>')
 def delete(cid):
