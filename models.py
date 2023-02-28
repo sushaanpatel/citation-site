@@ -55,7 +55,7 @@ class Website(Citation):
     def update(self, cid):
         a = self.author.split(' ')
         web = scrape(self.url)
-        title = web['title']
+        title = "" if web['title'] == "No Title" else web['title']
         icon = web['icon']
         fname = None
         lname = None

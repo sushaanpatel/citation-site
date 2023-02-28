@@ -31,9 +31,7 @@
                     <form action="/edit/{{j['_id']}}" method="POST">
                         <br>
                         <input type="url" name="url" id="eurl" oninput="check()" class="form-control input" placeholder="Url" value="{{j['url']}}">
-                        {% if j['type'] == 'img' %}
                         <input type="title" name="title" id="title" oninput="check()" class="form-control input" placeholder="Image Title" value="{{j['web_title']}}">
-                        {% endif %}
                         <input type="text" name="author" id="eauthor" oninput="check()" class="form-control input" placeholder="Author" value="{{j['author']}}">
                         <input type="text" name="publisher" id="epublisher" oninput="check()" class="form-control input" placeholder="Publisher" value="{{j['publisher']}}">
                         <label for="ac_date"><b>Access Date</b></label>
@@ -54,6 +52,24 @@
               </div>
             </div>
         </div>
+        <div class="offcanvas offcanvas-bottom" tabindex="-1" name="{{j['_id']}}" aria-labelledby="offcanvasBottomLabel" style="background-color: #141E27;">
+            <div class="offcanvas-header">
+              <h5 class="offcanvas-title">In-text Citation</h5>
+              <button type="button" class="butn" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="offcanvas-body small">
+                <div class="row">
+                    <div class="col">
+                        <input type="text" class="form-control input" value="{{getlname(j['author'])}}" id="lname" placeholder="Author's Last Name" oninput="changein('lname', 'iden')">
+                        <input type="text" class="form-control input" id="iden" placeholder="Identifiers(eg. page/line number, title)" oninput="changein('lname', 'iden')">
+                    </div>
+                    <div class="col">
+                        <pre style="font-size:20px;" id="exam">({{getlname(j['author'])}} )</pre>
+                        <a onclick="cpy(document.getElementById('exam').innerHTML)" style="text-decoration: none;color:E0DDAA;cursor:pointer;font-size:25px;"><i class="bi bi-clipboard"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col col-lg">
        <div class="cite card">
             <a href="{{j['url']}}" target="_blank" style="text-decoration: none;color:#E0DDAA;"><div class="card-header">
@@ -67,12 +83,14 @@
                 <b style="cursor: pointer;" onclick="cpy(`{{j['full_citation']}}`)"><i class="bi bi-clipboard" style="font-size: 24;" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to Copy Citation"></i></b>
                 {% else %}
                 <a href="/delete/{{j['_id']}}" style="text-decoration: none;color:E0DDAA;"><b><i class="bi bi-trash" style="font-size: 24;" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to Delete Citation"></i></b></a>&ThickSpace;&ThickSpace;
+                <a onclick="showcpymsg(`{{j['_id']}}`)" style="text-decoration: none;color:E0DDAA;cursor:pointer;"><b><i class="bi bi-text-indent-left" style="font-size: 24;" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to Copy in-text Citation"></i></b></a>&ThickSpace;&ThickSpace;
                 <b style="cursor: pointer;" onclick="cpy(`{{j['full_citation']}}`)"><i class="bi bi-clipboard" style="font-size: 24;" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to Copy Citation"></i></b>&ThickSpace;&ThickSpace;
                 <a onclick="showModal(`{{j['_id']}}`)" style="text-decoration: none;color:E0DDAA;cursor:pointer;"><b><i class="bi bi-pen" style="font-size: 24;" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to Edit Citation"></i></b></a>
                 {% endif %}
             </div>
         </div>
         </div>
+        {% if j['web_title'] == 'No Title' %}<script>window.onload = () => showModal(`{{j['_id']}}`)</script>{% endif %}
         {% endfor %}
         </div>
        {% endfor %}

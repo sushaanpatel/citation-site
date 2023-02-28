@@ -23,6 +23,13 @@ def format(unformat):
             count += 2
     return formated_list
 
+def getlname(name):
+    a = name.split(' ')
+    if len(a) == 1:
+        return a[0]
+    else:
+        return a[1]
+
 # Main route
 @app.route('/')
 def folders():
@@ -37,7 +44,7 @@ def folders():
             all_cites = all_cites + i['full_citation'] + '\n'
         temp = temp[::-1]
         temp = format(temp)
-        return render_template('index.html', cites=cites, all=all_cites, temp=temp, session=session, login_r=False, folders=folders)
+        return render_template('index.html', cites=cites, all=all_cites, temp=temp, session=session, login_r=False, folders=folders, getlname=getlname)
     else:
         if 'citation' in session:
             temp = list(session['citation'])
@@ -52,7 +59,7 @@ def folders():
             return render_template('index.html', session=session, cites=cites, temp=temp, all=all_cites, login_r=True, err = err, folders=[])
         else:
             err = request.args.get('err')
-            return render_template('index.html', session=session, cites=[], temp=[], all="", login_r=True, err = err, folders=[])
+            return render_template('index.html', session=session, cites=[], temp=[], all="", login_r=True, err = err, folders=[], getlname=getlname)
 
 @app.route('/citations/<folder>')
 def index(folder):
@@ -71,9 +78,9 @@ def index(folder):
                     all_cites = all_cites + i['full_citation'] + '\n'
                 temp = temp[::-1]
                 temp = format(temp)
-                return render_template('folders.html', cites=cites, all=all_cites, temp=temp, session=session, login_r=False, err='0', delop=True, fol=folder, folders=folders)
+                return render_template('folders.html', cites=cites, all=all_cites, temp=temp, session=session, login_r=False, err='0', delop=True, fol=folder, folders=folders, getlname=getlname)
         else:
-            return render_template('folders.html', cites=[], all="", temp=[], session=session, login_r=False, err='3', delop=False)
+            return render_template('folders.html', cites=[], all="", temp=[], session=session, login_r=False, err='3', delop=False, getlname=getlname)
 
 @app.route('/addfolder', methods=['POST'])
 def addf():
@@ -144,27 +151,31 @@ def register():
 
 @app.route('/cite', methods=['POST'])
 def add():
-    if request.method == 'POST':
-        ctype = request.form['type']
-        url = request.form['url']
-        try:
-            title = request.form['title']
-        except:
-            title = ""
-        author = request.form['author']
-        publisher = request.form['publisher']
-        ac_date = request.form['ac_date']
-        year = request.form['pub_date']
-        f = request.form['folder']
-        folder = f if f != "" else 'default'
-        if 'username' in session:
-            c = Website(author, publisher, ac_date, year, url, session['username'], "", folder) if ctype == 'web' else Image(author, publisher, ac_date, year, url, session['username'], title, folder)
-            c.citeit()
-            return redirect(f'/citations/{folder}')
-        else:
-            c = Website(author, publisher, ac_date, year, url, "ano", "", '') if ctype == 'web' else Image(author, publisher, ac_date, year, url, "ano", title, '')
-            c.citeit()
-            return redirect('/')
+    try:
+        if request.method == 'POST':
+            ctype = request.form['type']
+            url = request.form['url']
+            try:
+                title = request.form['title']
+            except:
+                title = ""
+            author = request.form['author']
+            publisher = request.form['publisher']
+            ac_date = request.form['ac_date']
+            year = request.form['pub_date']
+            f = request.form['folder']
+            folder = f if f != "" else 'default'
+            if 'username' in session:
+                c = Website(author, publisher, ac_date, year, url, session['username'], "", folder) if ctype == 'web' else Image(author, publisher, ac_date, year, url, session['username'], title, folder)
+                c.citeit()
+                return redirect(f'/citations/{folder}')
+            else:
+                c = Website(author, publisher, ac_date, year, url, "ano", "", '') if ctype == 'web' else Image(author, publisher, ac_date, year, url, "ano", title, '')
+                c.citeit()
+                return redirect('/')
+    except Exception as e:
+        print(e)
+        return redirect('/')
 
 @app.route('/edit/<cid>', methods=['POST'])
 def edit(cid):

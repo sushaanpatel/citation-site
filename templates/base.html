@@ -95,10 +95,10 @@
             }
             .cite{
                 width:100%;
-                min-width:300px;
-                max-width:800px;
+                min-width:200px;
+                max-width:600px;
                 border-radius:10px;
-                min-height:300px;
+                min-height:200px;
                 height:95%;
                 margin-bottom:6%;
                 background-color:#203239;
@@ -190,7 +190,7 @@
         <div class="offcanvas offcanvas-start" tabindex="-1" id="del" aria-labelledby="del" aria-hidden="true" style="background-color: #141E27;">
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title">Are you Sure?</h5>
-                <button type="button" class="butn" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                <button type="button" class="butn" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x-lg"></i></button>
               </div>
               <div class="offcanvas-body small">
                 <p>You won't be able to recover your account after deletion</p><br>
@@ -389,7 +389,6 @@
 
             function cpy(text){
                 navigator.clipboard.writeText(text)
-                alert('Copied!')
             }
 
             function showModal(id){
@@ -397,6 +396,15 @@
                     keyboard: false
                 })
                 myModal.show()
+            }
+
+            function showcpymsg(id){
+                var myOffcanvas = document.getElementsByName(id)[0]
+                console.log(myOffcanvas)
+                var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas, {
+                    keyboard: false
+                })
+                bsOffcanvas.show()
             }
 
             function loginmsg(){
@@ -432,6 +440,13 @@
                 else{
                     btn.disabled = true;
                 }
+            }
+
+            function changein(id1, id2){
+                var x = document.getElementById('exam');
+                var lname  = document.getElementById(id1);
+                var iden = document.getElementById(id2);
+                x.innerHTML = `(${lname.value} ${iden.value})`;
             }
 
             mybutton = document.getElementById("topbutton");
