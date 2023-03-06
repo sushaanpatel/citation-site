@@ -57,12 +57,12 @@
         <div class="offcanvas-body small">
             <div class="row">
             <div class="col">
-                <input type="text" class="form-control input" value="{{getlname(j['author'])}}" id="lname" placeholder="Author's Last Name" oninput="changein('lname', 'iden')">
-                <input type="text" class="form-control input" id="iden" placeholder="Identifiers(eg. page/line number, title)" oninput="changein('lname', 'iden')">
+                <input type="text" class="form-control input" value="{{getlname(j['author'])}}" id="lname{{j['_id']}}" placeholder="Author's Last Name" oninput="changein(`lname{{j['_id']}}`, `iden{{j['_id']}}`, `exam{{j['_id']}}`)">
+                <input type="text" class="form-control input" id="iden{{j['_id']}}" placeholder="Identifiers(eg. page/line number, title)" oninput="changein(`lname{{j['_id']}}`, `iden{{j['_id']}}`, `exam{{j['_id']}}`)">
             </div>
             <div class="col">
-                <pre style="font-size:20px;" id="exam">({{getlname(j['author'])}} )</pre>
-                <a onclick="cpy(document.getElementById('exam').innerHTML)" style="text-decoration: none;color:E0DDAA;cursor:pointer;font-size:25px;"><i class="bi bi-clipboard"></i></a>
+                <pre style="font-size:20px;" id="exam{{j['_id']}}">({{getlname(j['author'])}} )</pre>
+                <a onclick="cpy(document.getElementById(`exam{{j['_id']}}`).innerHTML)" style="text-decoration: none;color:E0DDAA;cursor:pointer;font-size:25px;"><i class="bi bi-clipboard"></i></a>
             </div>
             </div>
         </div>

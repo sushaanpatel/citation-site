@@ -442,8 +442,8 @@
                 }
             }
 
-            function changein(id1, id2){
-                var x = document.getElementById('exam');
+            function changein(id1, id2, tar){
+                var x = document.getElementById(tar);
                 var lname  = document.getElementById(id1);
                 var iden = document.getElementById(id2);
                 x.innerHTML = `(${lname.value} ${iden.value})`;
