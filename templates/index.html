@@ -24,6 +24,7 @@
        {% for i in temp %}
        <div class="row">
         {% for j in i %}
+        {% if login_r == false %}
         <div class="modal fade" id="{{j['_id']}}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable">
               <div class="modal-content" style="background-color: #141E27;">
@@ -70,6 +71,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
         <div class="col col-lg">
        <div class="cite card">
             <a href="{{j['url']}}" target="_blank" style="text-decoration: none;color:#E0DDAA;"><div class="card-header">
