@@ -1,18 +1,26 @@
 import os
+import requests
+import json
 import dotenv
 import favicon
 from bs4 import BeautifulSoup
-from scraper_api import ScraperAPIClient
 
 dotenv.load_dotenv()
-api = os.environ.get('APIKEY')
-client = ScraperAPIClient(api)
+apiKey = os.environ.get('APIKEY')
+apiuser = os.environ.get('APIUSER')
+
 
 def scrape(url):
     try:
-        page = client.get(url = url)
+        payload = json.dumps({"url":url})
+        headers = {
+            'Content-Type': "application/json"
+        }
+        page = requests.request("POST", 'http://api.scraping-bot.io/scrape/raw-html', data=payload, auth=(apiuser,apiKey), headers=headers)
         soup = BeautifulSoup(page.content, 'html.parser')
         title = soup.head.title.text
+        # author = soup.find_all(attrs={'rel': 'author'})
+        # print(author[0])
         icon = favicon.get(url)
         con = None
         for i in icon:
@@ -22,4 +30,3 @@ def scrape(url):
     except Exception as e:
         print(e)
         return {'title': 'No Title', 'icon': '../static/noicon.png'}
-    # author = soup.find_all(attrs={'rel': 'author'}
