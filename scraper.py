@@ -16,7 +16,8 @@ def scrape(url):
         headers = {
             'Content-Type': "application/json"
         }
-        page = requests.request("POST", 'http://api.scraping-bot.io/scrape/raw-html', data=payload, auth=(apiuser,apiKey), headers=headers)
+        # page = requests.request("POST", 'http://api.scraping-bot.io/scrape/raw-html', data=payload, auth=(apiuser,apiKey), headers=headers)
+        page = requests.get(url)
         soup = BeautifulSoup(page.content, 'html.parser')
         title = soup.head.title.text
         # author = soup.find_all(attrs={'rel': 'author'})
